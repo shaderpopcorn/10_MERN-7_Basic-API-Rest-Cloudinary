@@ -1,5 +1,5 @@
 const setError = require("../config/error");
-const { Category } = require("../models/category");
+const Category = require("../models/category");
 
 // GET
 const getAllCategories = async (req, res, next) => {

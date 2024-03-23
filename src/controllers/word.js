@@ -1,5 +1,5 @@
 const setError = require("../config/error");
-const { Word } = require("../models/word");
+const Word = require("../models/word");
 
 // GET
 const getAllWords = async (req, res, next) => {
