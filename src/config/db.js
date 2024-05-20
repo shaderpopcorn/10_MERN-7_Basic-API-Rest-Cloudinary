@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
 
-mongoose
-  .connect("mongodb://localhost:27017/mern7-db")
-  .then(() => {
-    console.log("Connected to MongoDB: mern7-db");
-  })
-  .catch((err) => {
-    console.log("Error connecting to MongoDB: mern7-db", err);
-  });
+const connectDB = () => {
+  try {
+    mongoose.connect(process.env.MONGODB_ATLAS_URL);
+    console.log("Connected to MongoDB-Atlas: mern7-db");
+  } catch (err) {
+    console.log("Error connecting to MongoDB-Atlas: mern7-db", err);
+  }
+};
 
-module.exports = mongoose;
+module.exports = connectDB;

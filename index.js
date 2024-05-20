@@ -1,11 +1,12 @@
 require("dotenv").config();
-require("./src/config/db");
 const express = require("express");
-const indexRouter = require("./src/routers/indexRouter");
+const connectDB = require("./src/config/db");
+const indexRouter = require("./src/api/routers/indexRouter");
 const setError = require("./src/config/error");
-const app = express();
 
+const app = express();
 app.use(express.json());
+connectDB();
 
 app.use("/api", indexRouter);
 
@@ -21,5 +22,5 @@ app.use((error, req, res, next) => {
 
 const DB_PORT = parseInt(process.env.DB_PORT);
 app.listen(DB_PORT, () => {
-  console.log(`Server listening on port: http://localhost/${DB_PORT}`);
+  console.log(`Server listening on port: http://localhost:${DB_PORT}`);
 });

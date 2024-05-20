@@ -3,14 +3,15 @@ const mongoose = require("mongoose");
 const categorySchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
-    image: { type: String, required: true, trim: true },
-    language: {
+    icon: { type: String, required: true, trim: true },
+    isle: { type: Number, required: true, trim: true },
+    floor: {
       type: String,
       required: true,
-      enum: ["german", "english", "spanish", "portuguese"],
+      enum: ["GF", "FF", "SF", "TF"],
       trim: true,
     },
-    words: { type: mongoose.Types.ObjectId, ref: "words" },
+    books: [{ type: mongoose.Types.ObjectId, ref: "books" }],
   },
   {
     timestamps: true,
