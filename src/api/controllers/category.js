@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const setError = require("../../config/error");
 const Category = require("../models/category");
 
@@ -62,10 +63,7 @@ const updateCategoryByID = async (req, res, next) => {
     // return res.status(200).json(updatedCategory);
 
     const { id } = req.params;
-    const oldCategory = await Category.findByID(id).populate(
-      "books",
-      "title stock"
-    );
+    const oldCategory = await Category.findById(id);
     const newCategory = new Category(req.body);
     newCategory._id = id;
 
@@ -73,27 +71,24 @@ const updateCategoryByID = async (req, res, next) => {
     const newCategoryBooks = newCategory.books.toString().split(",");
     const combinedCategoryBooks = [...oldCategoryBooks, ...newCategoryBooks];
 
-    const noEmpties = combinedCategoryBooks.filter((el) => {
-      el != "";
-    });
+    const noEmpties = combinedCategoryBooks.filter((el) => el !== "");
 
-    const uniqueSet = [...newSet(noEmpties)];
+    const uniqueSet = [...new Set(noEmpties)];
 
     newCategory.books = uniqueSet.map(
       (idString) => new mongoose.Types.ObjectId(idString)
     );
 
-    const updatedCategory = await Category.findByIdAndUpdate(
-      id,
-      updatedCategory,
-      {
-        runValidators: true,
-        new: true,
-      }
-    );
+    console.log(newCategory.books);
 
-    return res.status(200).json(updatedCategory);
-  } catch (error) {
+    const newCategoryInfo = await Category.findByIdAndUpdate(id, newCategory, {
+      runValidators: true,
+      new: true,
+    });
+
+    return res.status(200).json(newCategoryInfo);
+  } catch (err) {
+    console.log("Error");
     return next(setError(400, err));
   }
 };

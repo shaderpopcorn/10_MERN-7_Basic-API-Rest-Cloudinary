@@ -6,11 +6,12 @@ const {
   updateBookByID,
   deleteBookByID,
 } = require("../controllers/book");
+const { isAuthenticated } = require("../../middlewares/auth");
 
-bookRoutes.post("/", newBook);
+bookRoutes.post("/", [isAuthenticated], newBook);
 bookRoutes.get("/", getAllBooks);
 bookRoutes.get("/:id", getBookByID);
-bookRoutes.put("/:id", updateBookByID);
-bookRoutes.delete("/:id", deleteBookByID);
+bookRoutes.put("/:id", [isAuthenticated], updateBookByID);
+bookRoutes.delete("/:id", [isAuthenticated], deleteBookByID);
 
 module.exports = bookRoutes;
