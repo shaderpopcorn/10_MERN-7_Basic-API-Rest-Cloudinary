@@ -1,12 +1,29 @@
 require("dotenv").config();
 require("./src/config/cloudinary");
+const cors = require("cors");
 const express = require("express");
+const rateLimit = require("express-rate-limit");
 const connectDB = require("./src/config/db");
 const indexRouter = require("./src/api/routers/indexRouter");
 const setError = require("./src/config/error");
 
 const app = express();
+
+const limiter = rateLimit({
+  windowMs: 3 * 60 * 1000,
+  max: 50,
+  message: "Too many requests from this IP, please try again after 3 minutes",
+});
+
 app.use(express.json());
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
+app.use(limiter);
+app.use(cors());
+
 connectDB();
 
 app.use("/api", indexRouter);

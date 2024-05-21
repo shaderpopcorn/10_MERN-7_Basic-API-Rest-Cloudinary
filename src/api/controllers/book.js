@@ -7,7 +7,7 @@ const newBook = async (req, res, next) => {
   try {
     const bookExists = await Book.findOne({ title: req.body.title });
     if (bookExists) {
-      return res.status(400).json("Book already exists!");
+      return res.status(401).json("Book already exists!");
     } else {
       const newBook = new Book(req.body);
 
@@ -19,7 +19,7 @@ const newBook = async (req, res, next) => {
       return res.status(201).json(newBookInDB);
     }
   } catch (err) {
-    return next(setError(400, err));
+    return next(setError(401, "Book can't be created"));
   }
 };
 
@@ -29,7 +29,7 @@ const getAllBooks = async (req, res, next) => {
     const allBooks = await Book.find().lean().populate("category", "name");
     return res.status(200).json(allBooks);
   } catch (err) {
-    return next(setError(400, err));
+    return next(setError(401, err));
   }
 };
 
@@ -39,7 +39,7 @@ const getBookByID = async (req, res, next) => {
     const book = await Book.findById(req.params.id);
     return res.status(200).json(book);
   } catch (err) {
-    return next(setError(400, err));
+    return next(setError(401, err));
   }
 };
 
@@ -64,7 +64,7 @@ const updateBookByID = async (req, res, next) => {
     });
     return res.status(200).json(updatedBook);
   } catch (err) {
-    return next(setError(400, err));
+    return next(setError(401, "Book can't be updated"));
   }
 };
 
@@ -77,7 +77,7 @@ const deleteBookByID = async (req, res, next) => {
       deletedBook: deletedBook,
     });
   } catch (err) {
-    return next(setError(400, err));
+    return next(setError(401, "Book can't be deleted"));
   }
 };
 

@@ -8,7 +8,7 @@ const newCategory = async (req, res, next) => {
   try {
     const CategoryExists = await Category.findOne({ name: req.body.name });
     if (CategoryExists) {
-      return res.status(400, "Category already exists!");
+      return res.status(401, "Category already exists!");
     } else {
       const newCategory = new Category(req.body);
 
@@ -20,7 +20,7 @@ const newCategory = async (req, res, next) => {
       return res.status(201).json(newCategoryInDB);
     }
   } catch (err) {
-    return next(setError(400, err));
+    return next(setError(401, "Category can't be created"));
   }
 };
 
@@ -32,7 +32,7 @@ const getAllCategories = async (req, res, next) => {
       .populate("books", "title stock");
     return res.status(200).json(allWords);
   } catch (err) {
-    return next(setError(400, err));
+    return next(setError(401, err));
   }
 };
 
@@ -44,7 +44,7 @@ const getCategoryByID = async (req, res, next) => {
       .populate("books", "title stock");
     return res.status(200).json(category);
   } catch (err) {
-    return next(setError(400, err));
+    return next(setError(401, err));
   }
 };
 
@@ -83,7 +83,7 @@ const updateCategoryByID = async (req, res, next) => {
     return res.status(200).json(newCategoryInfo);
   } catch (err) {
     console.log("Error");
-    return next(setError(400, err));
+    return next(setError(401, "Category can't be updated"));
   }
 };
 
@@ -93,7 +93,7 @@ const deleteCategoryByID = async (req, res, next) => {
     const deletedCategory = await Category.findByIdAndDelete(req.params.id);
     return res.status(200).json(deletedCategory);
   } catch (err) {
-    return next(setError(400, err));
+    return next(setError(401, "Category can't be deleted"));
   }
 };
 

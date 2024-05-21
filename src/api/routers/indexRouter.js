@@ -5,6 +5,6 @@ const userRoutes = require("./user");
 
 indexRouter.use("/book", bookRoutes);
 indexRouter.use("/category", categoryRoutes);
-indexRouter.use("/user", userRoutes);
+indexRouter.use("/auth", userRoutes);
 
 module.exports = indexRouter;
