@@ -5,7 +5,6 @@ const { verifyToken } = require("../config/jwt");
 const isAuthenticated = async (req, res, next) => {
   try {
     const token = req.headers.authorization;
-    // console.log(token);
 
     if (!token) {
       return next(setError(401, "You do not have permission."));

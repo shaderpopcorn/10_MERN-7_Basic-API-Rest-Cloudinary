@@ -1,4 +1,5 @@
 require("dotenv").config();
+require("./src/config/cloudinary");
 const express = require("express");
 const connectDB = require("./src/config/db");
 const indexRouter = require("./src/api/routers/indexRouter");

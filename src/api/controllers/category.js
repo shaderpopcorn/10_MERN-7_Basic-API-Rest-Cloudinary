@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const setError = require("../../config/error");
 const Category = require("../models/category");
+const { deleteFile } = require("../../middlewares/handleCloudinaryFiles");
 
 // POST
 const newCategory = async (req, res, next) => {
@@ -10,6 +11,11 @@ const newCategory = async (req, res, next) => {
       return res.status(400, "Category already exists!");
     } else {
       const newCategory = new Category(req.body);
+
+      if (req.file) {
+        newCategory.icon = req.file.path;
+      }
+
       const newCategoryInDB = await newCategory.save(newCategory);
       return res.status(201).json(newCategoryInDB);
     }
@@ -45,27 +51,17 @@ const getCategoryByID = async (req, res, next) => {
 // PUT
 const updateCategoryByID = async (req, res, next) => {
   try {
-    // const { id } = req.params;
-    // const oldCategory = await Category.findById(id);
-    // const newCategory = new Category(req.body);
-    // newCategory._id = id;
-
-    // if (newCategory.books) {
-    //   const uniqueSet = newSet([...oldCategory.books, ...newCategory.books]);
-    //   newCategory.books = Array.from(uniqueSet);
-    // }
-
-    // const updatedCategory = await Category.findByIdAndUpdate(
-    //   req.params.id,
-    //   req.body,
-    //   { runValidators: true, new: true }
-    // );
-    // return res.status(200).json(updatedCategory);
-
     const { id } = req.params;
     const oldCategory = await Category.findById(id);
     const newCategory = new Category(req.body);
     newCategory._id = id;
+
+    if (req.file) {
+      newCategory.icon = req.file.path;
+      if (oldCategory.icon) {
+        deleteFile(oldCategory.icon);
+      }
+    }
 
     const oldCategoryBooks = oldCategory.books.toString().split(",");
     const newCategoryBooks = newCategory.books.toString().split(",");
@@ -78,8 +74,6 @@ const updateCategoryByID = async (req, res, next) => {
     newCategory.books = uniqueSet.map(
       (idString) => new mongoose.Types.ObjectId(idString)
     );
-
-    console.log(newCategory.books);
 
     const newCategoryInfo = await Category.findByIdAndUpdate(id, newCategory, {
       runValidators: true,

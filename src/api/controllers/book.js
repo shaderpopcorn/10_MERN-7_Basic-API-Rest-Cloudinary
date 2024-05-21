@@ -1,5 +1,6 @@
 const setError = require("../../config/error");
 const Book = require("../models/book");
+const { deleteFile } = require("../../middlewares/handleCloudinaryFiles");
 
 // POST
 const newBook = async (req, res, next) => {
@@ -9,6 +10,11 @@ const newBook = async (req, res, next) => {
       return res.status(400).json("Book already exists!");
     } else {
       const newBook = new Book(req.body);
+
+      if (req.file) {
+        newBook.cover = req.file.path;
+      }
+
       const newBookInDB = await newBook.save();
       return res.status(201).json(newBookInDB);
     }
@@ -40,17 +46,19 @@ const getBookByID = async (req, res, next) => {
 // PUT
 const updateBookByID = async (req, res, next) => {
   try {
-    // const { id } = req.params;
-    // const oldBook = await Book.findById(id);
-    // const newBook = new Book(req.body);
-    // newBook._id = id;
+    const { id } = req.params;
+    const oldBook = await Book.findById(id);
+    const newBook = new Book(req.body);
+    newBook._id = id;
 
-    // if (newBook.categories) {
-    //   const uniqueSet = newSet([...oldBook.categories, ...newBook.categories]);
-    //   newBook.categories = Array.from(uniqueSet);
-    // }
+    if (req.file) {
+      newBook.cover = req.file.path;
+      if (oldBook.cover) {
+        deleteFile(oldBook.cover);
+      }
+    }
 
-    const updatedBook = await Book.findByIdAndUpdate(req.params.id, req.body, {
+    const updatedBook = await Book.findByIdAndUpdate(id, newBook, {
       runValidators: true,
       new: true,
     });
