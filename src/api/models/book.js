@@ -13,6 +13,7 @@ const bookSchema = new mongoose.Schema(
       enum: ["german", "english", "spanish", "portuguese"],
       trim: true,
     },
+    image: { type: String, required: false, trim: true },
     category: { type: mongoose.Types.ObjectId, ref: "categories" },
   },
   {

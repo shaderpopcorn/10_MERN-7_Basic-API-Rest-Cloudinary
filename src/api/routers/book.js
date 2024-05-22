@@ -4,6 +4,7 @@ const {
   getAllBooks,
   getBookByID,
   updateBookByID,
+  newBookImageByID,
   deleteBookByID,
 } = require("../controllers/book");
 const { isAuthenticated } = require("../../middlewares/auth");
@@ -17,6 +18,12 @@ bookRoutes.put(
   [isAuthenticated],
   uploadFile.single("cover"),
   updateBookByID
+);
+bookRoutes.put(
+  "/image/:id",
+  [isAuthenticated],
+  uploadFile.single("image"),
+  newBookImageByID
 );
 bookRoutes.delete("/:id", [isAuthenticated], deleteBookByID);
 

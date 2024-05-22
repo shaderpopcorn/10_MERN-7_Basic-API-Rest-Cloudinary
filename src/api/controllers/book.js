@@ -68,6 +68,31 @@ const updateBookByID = async (req, res, next) => {
   }
 };
 
+// PUT
+const newBookImageByID = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const oldImageBook = await Book.findById(id);
+    const newImageBook = new Book(req.body);
+    newImageBook._id = id;
+
+    if (req.file) {
+      newImageBook.image = req.file.path;
+      if (oldImageBook.image) {
+        deleteFile(oldImageBook.image);
+      }
+    }
+
+    const updatedImageBook = await Book.findByIdAndUpdate(id, newImageBook, {
+      runValidators: true,
+      new: true,
+    });
+    return res.status(200).json(updatedImageBook);
+  } catch (err) {
+    return next(setError(401, "Book image can't be updated"));
+  }
+};
+
 // DELETE
 const deleteBookByID = async (req, res, next) => {
   try {
@@ -86,5 +111,6 @@ module.exports = {
   getAllBooks,
   getBookByID,
   updateBookByID,
+  newBookImageByID,
   deleteBookByID,
 };

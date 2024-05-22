@@ -29,7 +29,7 @@ connectDB();
 app.use("/api", indexRouter);
 
 app.use("*", (req, res, next) => {
-  return next(setError(400, "Not found!"));
+  return next(setError(404, "Not found!"));
 });
 
 app.use((error, req, res, next) => {
